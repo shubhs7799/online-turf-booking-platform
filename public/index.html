@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turf Booking Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="showHome()">TurfBook</a>
+            <div class="navbar-nav ms-auto">
+                <div id="authButtons">
+                    <button class="btn btn-outline-light me-2" onclick="showLogin()">Login</button>
+                    <button class="btn btn-light" onclick="showSignup()">Sign Up</button>
+                </div>
+                <div id="userMenu" class="d-none">
+                    <span class="navbar-text me-3" id="userName"></span>
+                    <button class="btn btn-outline-light" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Home Page -->
+        <div id="homePage">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <h2 class="text-center mb-4">Find & Book Turfs</h2>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" id="searchLocation" placeholder="Location">
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" id="searchSport" placeholder="Sport">
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="date" class="form-control" id="searchDate">
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-primary w-100" onclick="searchTurfs()">Search Turfs</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="searchResults" class="mt-4"></div>
+        </div>
+
+        <!-- Login/Signup Pages -->
+        <div id="loginPage" class="d-none">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Login</h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="loginForm">
+                                <div class="mb-3">
+                                    <input type="email" class="form-control" id="loginEmail" placeholder="Email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="password" class="form-control" id="loginPassword" placeholder="Password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="signupPage" class="d-none">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Sign Up</h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="signupForm">
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" id="signupName" placeholder="Full Name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="email" class="form-control" id="signupEmail" placeholder="Email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="password" class="form-control" id="signupPassword" placeholder="Password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="tel" class="form-control" id="signupPhone" placeholder="Phone Number">
+                                </div>
+                                <div class="mb-3">
+                                    <select class="form-control" id="signupRole" required onchange="toggleTurfFields()">
+                                        <option value="">Select Role</option>
+                                        <option value="player">Player</option>
+                                        <option value="turf_owner">Turf Owner/Organization</option>
+                                    </select>
+                                </div>
+                                <div id="turfFields" class="d-none">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="turfName" placeholder="Turf Name">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="turfLocation" placeholder="Location">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="turfSport" placeholder="Sport Type">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Pages -->
+        <div id="playerDashboard" class="d-none">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="list-group">
+                        <button class="list-group-item list-group-item-action" onclick="showSearchTurfs()">Search & Book Turfs</button>
+                        <button class="list-group-item list-group-item-action" onclick="showMyBookings()">My Bookings</button>
+                        <button class="list-group-item list-group-item-action" onclick="showTeams()">Teams</button>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div id="dashboardContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ownerDashboard" class="d-none">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="list-group">
+                        <button class="list-group-item list-group-item-action active" onclick="showMyTurfs()">My Turf</button>
+                        <button class="list-group-item list-group-item-action" onclick="showMySlots()">View Slots</button>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div id="ownerContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="bookingModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Book Slot</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="slotDetails"></div>
+                    <button class="btn btn-primary" onclick="confirmBooking()">Confirm Booking</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="teamModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Team</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="teamForm">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="teamName" placeholder="Team Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="teamLocation" placeholder="Location" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Team</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

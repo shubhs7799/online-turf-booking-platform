@@ -1,0 +1,7 @@
+/node_modules
+
+.env
+
+ARCHITECTURE.md
+RESUME_PROJECT_GUIDE.md
+DATABASE_DESIGN.md
