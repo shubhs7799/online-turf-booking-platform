@@ -1,17 +1,28 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    dialect: 'postgres',
-    logging: false
-  }
-);
+// Use DATABASE_URL in production, individual vars in development
+const sequelize = process.env.NODE_ENV === 'production'
+  ? new Sequelize(process.env.DATABASE_URL, {
+      dialect: 'postgres',
+      logging: false,
+      dialectOptions: {
+        ssl: { require: true, rejectUnauthorized: false },
+      },
+    })
+  : new Sequelize(
+      process.env.DB_NAME,
+      process.env.DB_USER,
+      process.env.DB_PASSWORD,
+      {
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        dialect: 'postgres',
+        logging: false,
+      }
+    );
 
+// Models
 const User = require('./User')(sequelize, Sequelize.DataTypes);
 const Turf = require('./Turf')(sequelize, Sequelize.DataTypes);
 const Slot = require('./Slot')(sequelize, Sequelize.DataTypes);
@@ -46,5 +57,5 @@ module.exports = {
   Slot,
   Booking,
   Team,
-  TeamMember
+  TeamMember,
 };
