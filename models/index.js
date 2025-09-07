@@ -1,7 +1,6 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// Use DATABASE_URL in production, individual vars in development
 const sequelize = process.env.NODE_ENV === 'production'
   ? new Sequelize(process.env.DATABASE_URL, {
       dialect: 'postgres',
@@ -21,6 +20,7 @@ const sequelize = process.env.NODE_ENV === 'production'
         logging: false,
       }
     );
+
 
 // Models
 const User = require('./User')(sequelize, Sequelize.DataTypes);
