@@ -9,6 +9,7 @@ const API_BASE = '/api';
 document.addEventListener('DOMContentLoaded', function() {
     checkAuth();
     setupEventListeners();
+    loadAllTurfs(); // Auto-load turfs on page load
 });
 
 // Setup event listeners
@@ -175,6 +176,18 @@ function showSearchTurfs() {
         </div>
         <div id="dashboardSearchResults"></div>
     `;
+    
+    // Auto-load all turfs
+    loadDashboardTurfs();
+}
+
+async function loadDashboardTurfs() {
+    try {
+        const response = await axios.get(`${API_BASE}/turfs/search`);
+        displayDashboardSearchResults(response.data);
+    } catch (error) {
+        console.error('Failed to load turfs');
+    }
 }
 
 async function searchTurfsFromDashboard() {
@@ -231,6 +244,15 @@ function displayDashboardSearchResults(turfs) {
 }
 
 // Search functions
+async function loadAllTurfs() {
+    try {
+        const response = await axios.get(`${API_BASE}/turfs/search`);
+        displaySearchResults(response.data);
+    } catch (error) {
+        console.error('Failed to load turfs');
+    }
+}
+
 async function searchTurfs() {
     const location = document.getElementById('searchLocation').value;
     const sport = document.getElementById('searchSport').value;
@@ -786,18 +808,35 @@ function displayTurfBookings(bookings) {
 
 // Utility functions
 function showAlert(message, type) {
+    // Remove existing alerts
+    const existingAlerts = document.querySelectorAll('.alert');
+    existingAlerts.forEach(alert => alert.remove());
+    
     const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = `
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        min-width: 300px;
+        max-width: 400px;
+    `;
     alertDiv.innerHTML = `
+        <strong>${type === 'success' ? '✓' : type === 'danger' ? '✗' : type === 'warning' ? '⚠' : 'ℹ'}</strong>
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     
-    document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.container').firstChild);
+    document.body.appendChild(alertDiv);
     
+    // Auto dismiss after 4 seconds
     setTimeout(() => {
-        alertDiv.remove();
-    }, 5000);
+        if (alertDiv.parentNode) {
+            alertDiv.classList.add('fade');
+            setTimeout(() => alertDiv.remove(), 150);
+        }
+    }, 4000);
 }
 
 function toggleTurfFields() {
